@@ -1,0 +1,11 @@
+{
+  "name": "pado-ios-tools",
+  "private": true,
+  "type": "module",
+  "description": "PADO 디자인 토큰 생성기 (의존성 없음, Node 20+)",
+  "scripts": {
+    "tokens": "node tools/tokens/build.mjs",
+    "tokens:drift": "node tools/tokens/drift.mjs",
+    "test:tokens": "node --test tools/tokens/lib.test.mjs"
+  }
+}
