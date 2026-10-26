@@ -5,7 +5,7 @@ import Testing
 struct TokenTests {
   @Test("Figma J 모드 값이 생성 코드에 그대로 들어간다")
   func generatedValues() {
-    #expect(PADOTokens.colorNames.count == 20)
+    #expect(PADOTokens.colorNames.count == 21) // Figma 20 + 코드 전용 glow
     #expect(PADOTokens.colorNames.contains { $0 == ("primary", "#4F97F2") })
     #expect(PADOTokens.Radius.lg == 22)
     #expect(PADOTokens.Typography.title.size == 22)

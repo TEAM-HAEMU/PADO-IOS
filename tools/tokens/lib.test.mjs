@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { camel, colorDrift, letterSpacingPt, lineHeightPt, normalize, parseHex, toCss, toSwift, weightOf } from './lib.mjs';
+import { camel, colorDrift, letterSpacingPt, lineHeightPt, normalize, parseHex, toCss, toSwift, typographyMismatches, weightOf } from './lib.mjs';
 
 const raw = JSON.parse(fs.readFileSync(new URL('../../tokens/figma-variables.json', import.meta.url), 'utf8'));
 
@@ -62,4 +62,12 @@ test('색 비교: 다른 값과 상대에만 있는 이름을 찾는다', () => 
   const { diffs, onlyOther } = colorDrift(t, "export const colors = { page: '#FFFFFF', ink3: '#647493', kakao: '#FEE500' }");
   assert.deepEqual(diffs, [{ key: 'ink3', token: '#7787A5', other: '#647493' }]);
   assert.deepEqual(onlyOther, ['kakao']);
+});
+
+test('화면 실측 글자 명세가 Figma 스타일을 덮고, 차이를 보고한다', () => {
+  const t = normalize(raw, { codeOnly: { typography: { body: { fontFamily: 'Pretendard', fontWeight: 400, fontSize: 15, lineHeight: 22, letterSpacing: -0.15 } } } });
+  assert.equal(t.typography.body.$value.fontSize, 15);
+  assert.equal(t.typography.body.$extensions['pado.figmaStyle'].fontSize, 16);
+  assert.deepEqual(typographyMismatches(t), ['body: Figma 16/22 400 -0.16pt → 화면 15/22 400 -0.15pt']);
+  assert.equal(t.typography.title.$extensions, undefined); // 덮지 않은 스타일은 Figma 그대로
 });

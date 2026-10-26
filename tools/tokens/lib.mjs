@@ -68,7 +68,16 @@ export function normalize(raw, { mode = DEFAULT_MODE, codeOnly = {} } = {}) {
       },
     };
   }
+  for (const [k, v] of Object.entries(codeOnly.color ?? {})) {
+    if (out.color[k]) throw new Error(`code-only 색 "${k}"가 Figma 변수와 겹침 — Figma 값을 쓰고 code-only에서 지우세요`);
+    out.color[k] = { $type: 'color', $value: v, $extensions: { 'pado.codeOnly': true } };
+  }
   for (const [k, v] of Object.entries(codeOnly.spacing ?? {})) out.spacing[k] = { $type: 'dimension', $value: v, $extensions: { 'pado.codeOnly': true } };
+  // 화면 실측 글자 명세가 Figma 텍스트 스타일과 다르면 화면 값을 쓰고, 원래 스타일 값을 남겨 둔다 (갱신 요청용)
+  for (const [k, v] of Object.entries(codeOnly.typography ?? {})) {
+    const figma = out.typography[k]?.$value;
+    out.typography[k] = { $type: 'typography', $value: v, $extensions: { 'pado.codeOnly': true, ...(figma ? { 'pado.figmaStyle': figma } : {}) } };
+  }
   return out;
 }
 
@@ -129,6 +138,14 @@ export function toCss(t) {
   }
   lines.push('}', '');
   return lines.join('\n');
+}
+
+/** 화면 실측값과 Figma 텍스트 스타일이 다른 항목 — "body: Figma 16/22 400 → 화면 15/22 400" */
+export function typographyMismatches(t) {
+  const fmt = x => `${x.fontSize}/${x.lineHeight ?? 'auto'} ${x.fontWeight} ${x.letterSpacing}pt`;
+  return Object.entries(t.typography)
+    .filter(([, v]) => v.$extensions?.['pado.figmaStyle'] && fmt(v.$extensions['pado.figmaStyle']) !== fmt(v.$value))
+    .map(([k, v]) => `${k}: Figma ${fmt(v.$extensions['pado.figmaStyle'])} → 화면 ${fmt(v.$value)}`);
 }
 
 /**
