@@ -1,0 +1,299 @@
+{
+  "$meta": {
+    "source": {
+      "fileKey": "y6lbJzKDLdJA73qvs6kkQM",
+      "exportedAt": "2026-10-26T06:32:58.205Z"
+    },
+    "mode": "J · 스카이 퓨어"
+  },
+  "color": {
+    "page": {
+      "$type": "color",
+      "$value": "#FFFFFF"
+    },
+    "card": {
+      "$type": "color",
+      "$value": "#F6FAFF"
+    },
+    "card2": {
+      "$type": "color",
+      "$value": "#EDF4FE"
+    },
+    "ink": {
+      "$type": "color",
+      "$value": "#1B2B4F"
+    },
+    "ink2": {
+      "$type": "color",
+      "$value": "#56688A"
+    },
+    "ink3": {
+      "$type": "color",
+      "$value": "#7787A5"
+    },
+    "line": {
+      "$type": "color",
+      "$value": "#E3EDF9"
+    },
+    "deep": {
+      "$type": "color",
+      "$value": "#F6FAFF"
+    },
+    "deepCard": {
+      "$type": "color",
+      "$value": "#EDF4FE"
+    },
+    "deepInk": {
+      "$type": "color",
+      "$value": "#1B2B4F"
+    },
+    "deepInk2": {
+      "$type": "color",
+      "$value": "#56688A"
+    },
+    "deepLine": {
+      "$type": "color",
+      "$value": "#DFE9F7"
+    },
+    "primary": {
+      "$type": "color",
+      "$value": "#4F97F2"
+    },
+    "primarySoft": {
+      "$type": "color",
+      "$value": "#E8F2FE"
+    },
+    "onPrimary": {
+      "$type": "color",
+      "$value": "#FFFFFF"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "#3A63B8"
+    },
+    "accent2": {
+      "$type": "color",
+      "$value": "#A9D1FB"
+    },
+    "positive": {
+      "$type": "color",
+      "$value": "#12A37A"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "#C58A12"
+    },
+    "caution": {
+      "$type": "color",
+      "$value": "#E2683A"
+    }
+  },
+  "radius": {
+    "sm": {
+      "$type": "dimension",
+      "$value": 10
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": 14
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": 22
+    },
+    "pill": {
+      "$type": "dimension",
+      "$value": 999
+    }
+  },
+  "spacing": {
+    "xxs": {
+      "$type": "dimension",
+      "$value": 2,
+      "$extensions": {
+        "pado.codeOnly": true
+      }
+    },
+    "xs": {
+      "$type": "dimension",
+      "$value": 4,
+      "$extensions": {
+        "pado.codeOnly": true
+      }
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": 8,
+      "$extensions": {
+        "pado.codeOnly": true
+      }
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": 12,
+      "$extensions": {
+        "pado.codeOnly": true
+      }
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": 16,
+      "$extensions": {
+        "pado.codeOnly": true
+      }
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": 20,
+      "$extensions": {
+        "pado.codeOnly": true
+      }
+    },
+    "xxl": {
+      "$type": "dimension",
+      "$value": 24,
+      "$extensions": {
+        "pado.codeOnly": true
+      }
+    },
+    "xxxl": {
+      "$type": "dimension",
+      "$value": 32,
+      "$extensions": {
+        "pado.codeOnly": true
+      }
+    }
+  },
+  "typography": {
+    "displayStrong": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 600,
+        "fontSize": 30,
+        "lineHeight": null,
+        "letterSpacing": 0
+      }
+    },
+    "display": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 400,
+        "fontSize": 30,
+        "lineHeight": 38,
+        "letterSpacing": -0.75
+      }
+    },
+    "title": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 700,
+        "fontSize": 22,
+        "lineHeight": 30,
+        "letterSpacing": -0.44
+      }
+    },
+    "headline": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 700,
+        "fontSize": 16,
+        "lineHeight": 24,
+        "letterSpacing": -0.24
+      }
+    },
+    "body": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 400,
+        "fontSize": 16,
+        "lineHeight": 22,
+        "letterSpacing": -0.16
+      }
+    },
+    "bodyStrong": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 500,
+        "fontSize": 16,
+        "lineHeight": 22,
+        "letterSpacing": -0.16
+      }
+    },
+    "caption": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 400,
+        "fontSize": 12,
+        "lineHeight": 18,
+        "letterSpacing": -0.06
+      }
+    },
+    "captionStrong": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 500,
+        "fontSize": 12,
+        "lineHeight": 18,
+        "letterSpacing": -0.06
+      }
+    },
+    "micro": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 400,
+        "fontSize": 14,
+        "lineHeight": 14,
+        "letterSpacing": 0
+      }
+    },
+    "label": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 400,
+        "fontSize": 10,
+        "lineHeight": 14,
+        "letterSpacing": 0
+      }
+    },
+    "number": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 500,
+        "fontSize": 13,
+        "lineHeight": 16,
+        "letterSpacing": 0
+      }
+    },
+    "numberLarge": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 600,
+        "fontSize": 28,
+        "lineHeight": 32,
+        "letterSpacing": -0.56
+      }
+    },
+    "wordmark": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 600,
+        "fontSize": 20,
+        "lineHeight": 24,
+        "letterSpacing": 0.8
+      }
+    }
+  }
+}
