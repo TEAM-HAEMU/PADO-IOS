@@ -20,7 +20,8 @@ export const colors = {
   "accent2": "#A9D1FB",
   "positive": "#12A37A",
   "warning": "#C58A12",
-  "caution": "#E2683A"
+  "caution": "#E2683A",
+  "glow": "#4071C8"
 } as const;
 
 export const radius = {
@@ -51,7 +52,7 @@ export const typography = {
   },
   "display": {
     "fontFamily": "Pretendard",
-    "fontWeight": 400,
+    "fontWeight": 700,
     "fontSize": 30,
     "lineHeight": 38,
     "letterSpacing": -0.75
@@ -73,30 +74,30 @@ export const typography = {
   "body": {
     "fontFamily": "Pretendard",
     "fontWeight": 400,
-    "fontSize": 16,
+    "fontSize": 15,
     "lineHeight": 22,
-    "letterSpacing": -0.16
+    "letterSpacing": -0.15
   },
   "bodyStrong": {
     "fontFamily": "Pretendard",
     "fontWeight": 500,
-    "fontSize": 16,
+    "fontSize": 15,
     "lineHeight": 22,
-    "letterSpacing": -0.16
+    "letterSpacing": -0.15
   },
   "caption": {
     "fontFamily": "Pretendard",
     "fontWeight": 400,
-    "fontSize": 12,
+    "fontSize": 13,
     "lineHeight": 18,
-    "letterSpacing": -0.06
+    "letterSpacing": -0.07
   },
   "captionStrong": {
     "fontFamily": "Pretendard",
     "fontWeight": 500,
-    "fontSize": 12,
+    "fontSize": 13,
     "lineHeight": 18,
-    "letterSpacing": -0.06
+    "letterSpacing": -0.07
   },
   "micro": {
     "fontFamily": "Pretendard",
@@ -107,8 +108,8 @@ export const typography = {
   },
   "label": {
     "fontFamily": "Pretendard",
-    "fontWeight": 400,
-    "fontSize": 10,
+    "fontWeight": 500,
+    "fontSize": 11,
     "lineHeight": 14,
     "letterSpacing": 0
   },
@@ -132,5 +133,12 @@ export const typography = {
     "fontSize": 20,
     "lineHeight": 24,
     "letterSpacing": 0.8
+  },
+  "labelWide": {
+    "fontFamily": "Pretendard",
+    "fontWeight": 500,
+    "fontSize": 11,
+    "lineHeight": 14,
+    "letterSpacing": 0.66
   }
 } as const;

@@ -1,4 +1,81 @@
 {
-  "$comment": "Figma 변수에 아직 없어서 코드에서 정한 토큰. 디자이너가 Figma 'PADO Theme'에 spacing/* 변수로 추가하면 이 파일에서 지운다.",
-  "spacing": { "xxs": 2, "xs": 4, "sm": 8, "md": 12, "lg": 16, "xl": 20, "xxl": 24, "xxxl": 32 }
+  "$comment": "Figma 변수/텍스트 스타일에 아직 없거나 화면과 다른 토큰. 디자이너가 Figma를 갱신하면 여기서 지운다. typography는 J 화면(2.1~2.3) 실측값 — tools/figma/audit-text.js 결과 / color.glow: J 화면 그림자 색(변수 미연결).",
+  "color": {
+    "glow": "#4071C8"
+  },
+  "spacing": {
+    "xxs": 2,
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 20,
+    "xxl": 24,
+    "xxxl": 32
+  },
+  "typography": {
+    "display": {
+      "fontFamily": "Pretendard",
+      "fontWeight": 700,
+      "fontSize": 30,
+      "lineHeight": 38,
+      "letterSpacing": -0.75
+    },
+    "title": {
+      "fontFamily": "Pretendard",
+      "fontWeight": 700,
+      "fontSize": 22,
+      "lineHeight": 30,
+      "letterSpacing": -0.44
+    },
+    "body": {
+      "fontFamily": "Pretendard",
+      "fontWeight": 400,
+      "fontSize": 15,
+      "lineHeight": 22,
+      "letterSpacing": -0.15
+    },
+    "bodyStrong": {
+      "fontFamily": "Pretendard",
+      "fontWeight": 500,
+      "fontSize": 15,
+      "lineHeight": 22,
+      "letterSpacing": -0.15
+    },
+    "caption": {
+      "fontFamily": "Pretendard",
+      "fontWeight": 400,
+      "fontSize": 13,
+      "lineHeight": 18,
+      "letterSpacing": -0.07
+    },
+    "captionStrong": {
+      "fontFamily": "Pretendard",
+      "fontWeight": 500,
+      "fontSize": 13,
+      "lineHeight": 18,
+      "letterSpacing": -0.07
+    },
+    "number": {
+      "fontFamily": "Pretendard",
+      "fontWeight": 500,
+      "fontSize": 13,
+      "lineHeight": 16,
+      "letterSpacing": 0
+    },
+    "label": {
+      "fontFamily": "Pretendard",
+      "fontWeight": 500,
+      "fontSize": 11,
+      "lineHeight": 14,
+      "letterSpacing": 0
+    },
+    "labelWide": {
+      "fontFamily": "Pretendard",
+      "fontWeight": 500,
+      "fontSize": 11,
+      "lineHeight": 14,
+      "letterSpacing": 0.66
+    }
+  }
 }

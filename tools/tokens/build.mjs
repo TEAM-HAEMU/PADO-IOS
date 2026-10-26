@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DEFAULT_MODE, normalize, toCss, toSwift, toTypeScript } from './lib.mjs';
+import { DEFAULT_MODE, normalize, toCss, toSwift, toTypeScript, typographyMismatches } from './lib.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const read = p => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'));
@@ -17,3 +17,9 @@ write('tokens/pado.tokens.json', JSON.stringify(tokens, null, 2) + '\n');
 write('Packages/PADODesignSystem/Sources/PADODesignSystem/Tokens/PADOTokens.generated.swift', toSwift(tokens));
 write('generated/react-native/tokens.ts', toTypeScript(tokens));
 write('generated/web/tokens.css', toCss(tokens));
+
+const mismatch = typographyMismatches(tokens);
+if (mismatch.length) {
+  console.log(`\n⚠ Figma 텍스트 스타일이 화면과 달라 화면 실측값을 썼어요 (Figma 스타일 갱신 필요 ${mismatch.length}건):`);
+  for (const m of mismatch) console.log('  -', m);
+}

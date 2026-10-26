@@ -6,6 +6,7 @@
   "scripts": {
     "tokens": "node tools/tokens/build.mjs",
     "tokens:drift": "node tools/tokens/drift.mjs",
-    "test:tokens": "node --test tools/tokens/lib.test.mjs"
+    "test:tokens": "node --test tools/tokens/lib.test.mjs",
+    "icons": "node tools/figma/icons-to-assets.mjs"
   }
 }

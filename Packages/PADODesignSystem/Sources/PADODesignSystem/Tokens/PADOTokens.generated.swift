@@ -44,6 +44,8 @@ public enum PADOTokens {
     public static let warning = SwiftUI.Color(.sRGB, red: 0.773, green: 0.541, blue: 0.071, opacity: 1)
     /// #E2683A
     public static let caution = SwiftUI.Color(.sRGB, red: 0.886, green: 0.408, blue: 0.227, opacity: 1)
+    /// #4071C8
+    public static let glow = SwiftUI.Color(.sRGB, red: 0.251, green: 0.443, blue: 0.784, opacity: 1)
   }
 
   public enum Radius {
@@ -67,18 +69,19 @@ public enum PADOTokens {
 
   public enum Typography {
     public static let displayStrong = PADOTextStyle(name: "displayStrong", family: "Pretendard", weight: 600, size: 30, lineHeight: nil, letterSpacing: 0)
-    public static let display = PADOTextStyle(name: "display", family: "Pretendard", weight: 400, size: 30, lineHeight: 38, letterSpacing: -0.75)
+    public static let display = PADOTextStyle(name: "display", family: "Pretendard", weight: 700, size: 30, lineHeight: 38, letterSpacing: -0.75)
     public static let title = PADOTextStyle(name: "title", family: "Pretendard", weight: 700, size: 22, lineHeight: 30, letterSpacing: -0.44)
     public static let headline = PADOTextStyle(name: "headline", family: "Pretendard", weight: 700, size: 16, lineHeight: 24, letterSpacing: -0.24)
-    public static let body = PADOTextStyle(name: "body", family: "Pretendard", weight: 400, size: 16, lineHeight: 22, letterSpacing: -0.16)
-    public static let bodyStrong = PADOTextStyle(name: "bodyStrong", family: "Pretendard", weight: 500, size: 16, lineHeight: 22, letterSpacing: -0.16)
-    public static let caption = PADOTextStyle(name: "caption", family: "Pretendard", weight: 400, size: 12, lineHeight: 18, letterSpacing: -0.06)
-    public static let captionStrong = PADOTextStyle(name: "captionStrong", family: "Pretendard", weight: 500, size: 12, lineHeight: 18, letterSpacing: -0.06)
+    public static let body = PADOTextStyle(name: "body", family: "Pretendard", weight: 400, size: 15, lineHeight: 22, letterSpacing: -0.15)
+    public static let bodyStrong = PADOTextStyle(name: "bodyStrong", family: "Pretendard", weight: 500, size: 15, lineHeight: 22, letterSpacing: -0.15)
+    public static let caption = PADOTextStyle(name: "caption", family: "Pretendard", weight: 400, size: 13, lineHeight: 18, letterSpacing: -0.07)
+    public static let captionStrong = PADOTextStyle(name: "captionStrong", family: "Pretendard", weight: 500, size: 13, lineHeight: 18, letterSpacing: -0.07)
     public static let micro = PADOTextStyle(name: "micro", family: "Pretendard", weight: 400, size: 14, lineHeight: 14, letterSpacing: 0)
-    public static let label = PADOTextStyle(name: "label", family: "Pretendard", weight: 400, size: 10, lineHeight: 14, letterSpacing: 0)
+    public static let label = PADOTextStyle(name: "label", family: "Pretendard", weight: 500, size: 11, lineHeight: 14, letterSpacing: 0)
     public static let number = PADOTextStyle(name: "number", family: "Pretendard", weight: 500, size: 13, lineHeight: 16, letterSpacing: 0)
     public static let numberLarge = PADOTextStyle(name: "numberLarge", family: "Pretendard", weight: 600, size: 28, lineHeight: 32, letterSpacing: -0.56)
     public static let wordmark = PADOTextStyle(name: "wordmark", family: "Pretendard", weight: 600, size: 20, lineHeight: 24, letterSpacing: 0.8)
+    public static let labelWide = PADOTextStyle(name: "labelWide", family: "Pretendard", weight: 500, size: 11, lineHeight: 14, letterSpacing: 0.66)
   }
 
   /// 미리보기 카탈로그·테스트용 목록
@@ -103,6 +106,7 @@ public enum PADOTokens {
     ("positive", "#12A37A"),
     ("warning", "#C58A12"),
     ("caution", "#E2683A"),
+    ("glow", "#4071C8"),
   ]
 
   public static let textStyles: [PADOTextStyle] = [
@@ -119,5 +123,6 @@ public enum PADOTokens {
     Typography.number,
     Typography.numberLarge,
     Typography.wordmark,
+    Typography.labelWide,
   ]
 }

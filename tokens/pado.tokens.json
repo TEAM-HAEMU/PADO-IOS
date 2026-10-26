@@ -86,6 +86,13 @@
     "caution": {
       "$type": "color",
       "$value": "#E2683A"
+    },
+    "glow": {
+      "$type": "color",
+      "$value": "#4071C8",
+      "$extensions": {
+        "pado.codeOnly": true
+      }
     }
   },
   "radius": {
@@ -179,10 +186,20 @@
       "$type": "typography",
       "$value": {
         "fontFamily": "Pretendard",
-        "fontWeight": 400,
+        "fontWeight": 700,
         "fontSize": 30,
         "lineHeight": 38,
         "letterSpacing": -0.75
+      },
+      "$extensions": {
+        "pado.codeOnly": true,
+        "pado.figmaStyle": {
+          "fontFamily": "Pretendard",
+          "fontWeight": 400,
+          "fontSize": 30,
+          "lineHeight": 38,
+          "letterSpacing": -0.75
+        }
       }
     },
     "title": {
@@ -193,6 +210,16 @@
         "fontSize": 22,
         "lineHeight": 30,
         "letterSpacing": -0.44
+      },
+      "$extensions": {
+        "pado.codeOnly": true,
+        "pado.figmaStyle": {
+          "fontFamily": "Pretendard",
+          "fontWeight": 700,
+          "fontSize": 22,
+          "lineHeight": 30,
+          "letterSpacing": -0.44
+        }
       }
     },
     "headline": {
@@ -210,9 +237,19 @@
       "$value": {
         "fontFamily": "Pretendard",
         "fontWeight": 400,
-        "fontSize": 16,
+        "fontSize": 15,
         "lineHeight": 22,
-        "letterSpacing": -0.16
+        "letterSpacing": -0.15
+      },
+      "$extensions": {
+        "pado.codeOnly": true,
+        "pado.figmaStyle": {
+          "fontFamily": "Pretendard",
+          "fontWeight": 400,
+          "fontSize": 16,
+          "lineHeight": 22,
+          "letterSpacing": -0.16
+        }
       }
     },
     "bodyStrong": {
@@ -220,9 +257,19 @@
       "$value": {
         "fontFamily": "Pretendard",
         "fontWeight": 500,
-        "fontSize": 16,
+        "fontSize": 15,
         "lineHeight": 22,
-        "letterSpacing": -0.16
+        "letterSpacing": -0.15
+      },
+      "$extensions": {
+        "pado.codeOnly": true,
+        "pado.figmaStyle": {
+          "fontFamily": "Pretendard",
+          "fontWeight": 500,
+          "fontSize": 16,
+          "lineHeight": 22,
+          "letterSpacing": -0.16
+        }
       }
     },
     "caption": {
@@ -230,9 +277,19 @@
       "$value": {
         "fontFamily": "Pretendard",
         "fontWeight": 400,
-        "fontSize": 12,
+        "fontSize": 13,
         "lineHeight": 18,
-        "letterSpacing": -0.06
+        "letterSpacing": -0.07
+      },
+      "$extensions": {
+        "pado.codeOnly": true,
+        "pado.figmaStyle": {
+          "fontFamily": "Pretendard",
+          "fontWeight": 400,
+          "fontSize": 12,
+          "lineHeight": 18,
+          "letterSpacing": -0.06
+        }
       }
     },
     "captionStrong": {
@@ -240,9 +297,19 @@
       "$value": {
         "fontFamily": "Pretendard",
         "fontWeight": 500,
-        "fontSize": 12,
+        "fontSize": 13,
         "lineHeight": 18,
-        "letterSpacing": -0.06
+        "letterSpacing": -0.07
+      },
+      "$extensions": {
+        "pado.codeOnly": true,
+        "pado.figmaStyle": {
+          "fontFamily": "Pretendard",
+          "fontWeight": 500,
+          "fontSize": 12,
+          "lineHeight": 18,
+          "letterSpacing": -0.06
+        }
       }
     },
     "micro": {
@@ -259,10 +326,20 @@
       "$type": "typography",
       "$value": {
         "fontFamily": "Pretendard",
-        "fontWeight": 400,
-        "fontSize": 10,
+        "fontWeight": 500,
+        "fontSize": 11,
         "lineHeight": 14,
         "letterSpacing": 0
+      },
+      "$extensions": {
+        "pado.codeOnly": true,
+        "pado.figmaStyle": {
+          "fontFamily": "Pretendard",
+          "fontWeight": 400,
+          "fontSize": 10,
+          "lineHeight": 14,
+          "letterSpacing": 0
+        }
       }
     },
     "number": {
@@ -273,6 +350,16 @@
         "fontSize": 13,
         "lineHeight": 16,
         "letterSpacing": 0
+      },
+      "$extensions": {
+        "pado.codeOnly": true,
+        "pado.figmaStyle": {
+          "fontFamily": "Pretendard",
+          "fontWeight": 500,
+          "fontSize": 13,
+          "lineHeight": 16,
+          "letterSpacing": 0
+        }
       }
     },
     "numberLarge": {
@@ -293,6 +380,19 @@
         "fontSize": 20,
         "lineHeight": 24,
         "letterSpacing": 0.8
+      }
+    },
+    "labelWide": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Pretendard",
+        "fontWeight": 500,
+        "fontSize": 11,
+        "lineHeight": 14,
+        "letterSpacing": 0.66
+      },
+      "$extensions": {
+        "pado.codeOnly": true
       }
     }
   }
