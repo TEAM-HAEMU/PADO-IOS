@@ -35,6 +35,7 @@ public struct PinPreviewFeature {
     case closeTapped
     case delegate(Delegate)
 
+    @CasePathable
     public enum Delegate: Equatable, Sendable {
       case togglePreview(Track)
     }
@@ -59,7 +60,7 @@ public struct PinPreviewFeature {
         guard state.detail == nil else { return .none }
         state.isLoading = true
         let id = state.summary.id
-        return .run { send in
+        return .run { [api] send in
           await send(.loaded(await Result {
             // 상세 → 곡 순서는 지켜야 하고(songId가 상세에 있음), 반응 수는 동시에
             async let stats = api.stats(id)
@@ -87,10 +88,10 @@ public struct PinPreviewFeature {
 
       case .listenTapped:
         guard let url = state.song?.links.spotify else { return .none }
-        return .run { _ in await openURL(url) }
+        return .run { [openURL] _ in await openURL(url) }
 
       case .closeTapped:
-        return .run { _ in await dismiss() }
+        return .run { [dismiss] _ in await dismiss() }
 
       case .delegate:
         return .none

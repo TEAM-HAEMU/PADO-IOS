@@ -58,13 +58,13 @@ public struct MapFeature {
       case .task, .retryTapped:
         guard state.loading != .loading else { return .none }
         state.loading = .loading
-        return .run { send in
+        return .run { [location] send in
           await send(.located(await Result { try await location.currentLocation() }))
         }
 
       case let .located(.success(center)):
         state.center = center
-        return .run { send in
+        return .run { [location, api] send in
           // 동 이름과 드랍을 동시에 찾되, 보내는 순서는 고정 (드랍 → 동 이름)
           async let name = location.placeName(center)
           await send(.dropsLoaded(await Result { try await api.nearbyDrops(center, Self.radiusKm) }))

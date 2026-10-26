@@ -84,10 +84,10 @@ public struct PlayerFeature {
           switch state.status {
           case .playing:
             state.status = .paused
-            return .run { _ in await audioPlayer.pause() }
+            return .run { [audioPlayer] _ in await audioPlayer.pause() }
           case .paused:
             state.status = .playing
-            return .run { _ in await audioPlayer.resume() }
+            return .run { [audioPlayer] _ in await audioPlayer.resume() }
           case .loading:
             return .none
           case .idle, .unavailable:
@@ -97,7 +97,7 @@ public struct PlayerFeature {
         state.track = track
         state.status = .loading
         state.elapsed = 0
-        return .run { send in
+        return .run { [audioPlayer, previewClient] send in
           await audioPlayer.stop()
           await send(.previewResolved(await previewClient.previewURL(track.title, track.artist)))
         }
@@ -109,7 +109,7 @@ public struct PlayerFeature {
           return .none
         }
         state.status = .playing
-        return .run { send in
+        return .run { [audioPlayer] send in
           for await event in await audioPlayer.play(url) {
             await send(.playerEvent(event))
           }
@@ -132,7 +132,7 @@ public struct PlayerFeature {
 
       case .stop:
         state = State()
-        return .merge(.cancel(id: CancelID.playback), .run { _ in await audioPlayer.stop() })
+        return .merge(.cancel(id: CancelID.playback), .run { [audioPlayer] _ in await audioPlayer.stop() })
       }
     }
   }

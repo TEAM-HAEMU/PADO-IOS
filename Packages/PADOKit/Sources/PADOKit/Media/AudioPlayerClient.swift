@@ -64,6 +64,8 @@ final class LivePlayer {
   private var timeObserver: Any?
   private var endObserver: NSObjectProtocol?
   private var continuation: AsyncStream<AudioPlayerClient.Event>.Continuation?
+  /// 몇 번째 재생인지 — 앞 곡 스트림의 늦은 정리가 새 곡의 관찰자를 지우지 않게 한다
+  private var generation = 0
 
   func play(_ url: URL) -> AsyncStream<AudioPlayerClient.Event> {
     finishCurrent()
@@ -75,6 +77,8 @@ final class LivePlayer {
     player.replaceCurrentItem(with: item)
     let (stream, continuation) = AsyncStream<AudioPlayerClient.Event>.makeStream()
     self.continuation = continuation
+    generation += 1
+    let current = generation
     timeObserver = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.25, preferredTimescale: 600), queue: .main) { [weak item] time in
       let duration = item?.duration.seconds ?? .nan
       continuation.yield(.progress(elapsed: time.seconds, duration: duration.isFinite ? duration : 30))
@@ -83,7 +87,12 @@ final class LivePlayer {
       continuation.yield(.finished)
       continuation.finish()
     }
-    continuation.onTermination = { [weak self] _ in Task { @MainActor in self?.removeObservers() } }
+    continuation.onTermination = { [weak self] _ in
+      Task { @MainActor in
+        guard let self, self.generation == current else { return }
+        self.removeObservers()
+      }
+    }
     player.play()
     return stream
   }

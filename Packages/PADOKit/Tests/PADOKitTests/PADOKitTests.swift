@@ -33,6 +33,14 @@ struct PADOKitTests {
     #expect(PreviewMatcher.normalize("Pink + White") == "pinkwhite")
   }
 
+  @Test("한글 제목은 영문 음역 결과를 1순위로 믿는다 (실제 iTunes: 난춘 → Nan Chun / SE SO NEON)")
+  func previewFuzzyHangul() {
+    let us: [ITunesResult.Row] = [.init(trackName: "Nan Chun", artistName: "SE SO NEON", previewUrl: "https://x/nanchun")]
+    #expect(PreviewMatcher.pick(us, title: "난춘", artist: "새소년") == nil)
+    #expect(PreviewMatcher.fuzzyPick(us, title: "난춘", artist: "새소년")?.previewUrl == "https://x/nanchun")
+    #expect(PreviewMatcher.fuzzyPick(us, title: "Robbers", artist: "The 1975") == nil) // 영문 제목은 추정하지 않음
+  }
+
   @Test("목 API: 1km 안의 드랍만, 음악 드랍 상세·곡")
   func mockAPI() async throws {
     let api = APIClient.mock(latency: .zero)

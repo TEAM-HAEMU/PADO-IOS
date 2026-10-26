@@ -20,6 +20,7 @@ extension PreviewClient: DependencyKey {
     return PreviewClient { title, artist in
       let key = PreviewMatcher.normalize(title) + "|" + PreviewMatcher.normalize(artist)
       if let hit = await cache.get(key) { return hit }
+      var fuzzy: URL?
       for country in ["US", "KR"] {
         var c = URLComponents(string: "https://itunes.apple.com/search")!
         c.queryItems = [.init(name: "term", value: "\(title) \(artist)"), .init(name: "entity", value: "song"), .init(name: "limit", value: "8"), .init(name: "country", value: country)]
@@ -30,8 +31,10 @@ extension PreviewClient: DependencyKey {
           await cache.set(key, url)
           return url
         }
+        // 정확히 맞는 곡이 두 스토어 모두 없을 때만 쓰는 후보 (한글 제목 → 영문 음역 대비)
+        if fuzzy == nil { fuzzy = PreviewMatcher.fuzzyPick(result.results, title: title, artist: artist)?.previewUrl.flatMap(URL.init(string:)) }
       }
-      return nil
+      return fuzzy
     }
   }
 
@@ -75,5 +78,12 @@ enum PreviewMatcher {
     func titleOK(_ r: ITunesResult.Row) -> Bool { let n = normalize(r.trackName); return !n.isEmpty && (n.contains(t) || t.contains(n)) }
     func artistOK(_ r: ITunesResult.Row) -> Bool { let n = normalize(r.artistName); return !a.isEmpty && (n.contains(a) || a.contains(n)) }
     return rows.first { titleOK($0) && artistOK($0) && $0.previewUrl != nil }
+  }
+
+  /// 한글 제목·가수는 iTunes에 영문 음역으로 올라간 경우가 많다 (난춘 → "Nan Chun", 새소년 → "SE SO NEON").
+  /// iTunes 검색이 음역을 고려하므로, 한글이 섞였으면 검색 1순위(미리듣기 있는 첫 곡)를 믿는다. RN 앱과 같은 규칙.
+  static func fuzzyPick(_ rows: [ITunesResult.Row], title: String, artist: String) -> ITunesResult.Row? {
+    let hasHangul = (title + artist).unicodeScalars.contains { (0xAC00...0xD7A3).contains($0.value) || (0x3131...0x318E).contains($0.value) }
+    return hasHangul ? rows.first { $0.previewUrl != nil } : nil
   }
 }

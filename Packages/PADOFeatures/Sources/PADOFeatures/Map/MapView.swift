@@ -24,15 +24,9 @@ public struct MapView: View {
         if store.player.track != nil {
           HStack {
             Spacer()
-            Button { store.send(.miniDiscTapped) } label: {
-              RemoteArt(url: store.player.track?.artURL) { art in
-                PADOMiniDisc(art: art, progress: store.player.progress, isPlaying: store.player.isPlaying)
-              }
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("재생 중인 드랍 열기")
-            .padding(.trailing, 14)
-            .padding(.bottom, 12)
+            MiniDiscButton(player: store.scope(state: \.player, action: \.player)) { store.send(.miniDiscTapped) }
+              .padding(.trailing, 14)
+              .padding(.bottom, 12)
           }
           .transition(.opacity)
         }
@@ -59,13 +53,20 @@ public struct MapView: View {
     Map(position: $camera) {
       if let center = store.center {
         Annotation("내 위치", coordinate: center.clLocation, anchor: .center) { PADOMeMarker() }
+          .annotationTitles(.hidden)
       }
       ForEach(store.drops) { drop in
         Annotation(drop.title, coordinate: drop.coordinate.clLocation, anchor: .bottom) {
-          Button { store.send(.pinTapped(id: drop.id)) } label: { pin(for: drop) }
-            .buttonStyle(.plain)
+          // Map 안에서는 Button보다 탭 제스처가 지도 제스처와 덜 부딪힌다
+          pin(for: drop)
+            .contentShape(Rectangle())
+            .onTapGesture { store.send(.pinTapped(id: drop.id)) }
+            .accessibilityElement(children: .ignore)
             .accessibilityLabel("\(drop.title), \(drop.subtitle)")
+            .accessibilityAddTraits(.isButton)
+            .accessibilityAction { store.send(.pinTapped(id: drop.id)) }
         }
+        .annotationTitles(.hidden) // 핀 아래 MapKit 자동 제목 숨김 (Figma엔 선택된 핀의 제목 칩만 있음)
       }
     }
     .mapStyle(.standard(emphasis: .muted, pointsOfInterest: .excludingAll))
@@ -167,7 +168,7 @@ public struct MapView: View {
           .onTapGesture { store.send(.preview(.dismiss)) }
           .accessibilityLabel("미리보기 닫기")
           .accessibilityAddTraits(.isButton)
-        PinPreviewView(store: previewStore, player: store.player)
+        PinPreviewView(store: previewStore, player: store.scope(state: \.player, action: \.player))
           .gesture(DragGesture(minimumDistance: 12).onEnded { value in
             if value.translation.height > 80 { store.send(.preview(.dismiss)) }
           })
@@ -188,6 +189,24 @@ public struct MapView: View {
 
   /// 300m 안은 진하게, 그 밖은 흐리게 (Figma 가까운 드랍 줄)
   private func isNear(_ drop: DropSummary) -> Bool { (distanceMeters(drop) ?? 0) <= 300 }
+}
+
+/// 지도 오른쪽 아래 재생 중 디스크. 재생 진행률은 0.25초마다 바뀌므로 지도 전체가 아니라 이 뷰만 다시 그린다.
+private struct MiniDiscButton: View {
+  let player: StoreOf<PlayerFeature>
+  let onTap: () -> Void
+
+  var body: some View {
+    let progress = player.progress
+    let isPlaying = player.isPlaying
+    Button(action: onTap) {
+      RemoteArt(url: player.track?.artURL) { art in
+        PADOMiniDisc(art: art, progress: progress, isPlaying: isPlaying)
+      }
+    }
+    .buttonStyle(.plain)
+    .accessibilityLabel("재생 중인 드랍 열기")
+  }
 }
 
 extension Coordinate {
