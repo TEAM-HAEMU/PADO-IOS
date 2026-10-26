@@ -1,0 +1,19 @@
+# Xcode
+*.xcodeproj/
+*.xcworkspace/xcuserdata/
+xcuserdata/
+DerivedData/
+build/
+*.xcresult
+.swiftpm/
+.build/
+Package.resolved.bak
+
+# Secrets — 키는 Config/Secrets.xcconfig(로컬 전용)에만
+Config/Secrets.xcconfig
+
+# Node (토큰 생성기)
+node_modules/
+
+# macOS
+.DS_Store
