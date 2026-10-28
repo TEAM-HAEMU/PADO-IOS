@@ -94,6 +94,14 @@ extension APIClient {
 /// 서버 응답 그대로의 모양 — type 필드로 갈라 앱 모델로 바꾼다
 struct NearbyResponse: Decodable, Sendable {
   var droppings: [RawDrop]
+
+  private enum CodingKeys: String, CodingKey { case droppings }
+  /// 항목 하나가 깨져도(null 필드 등) 나머지는 보여준다
+  private struct Lenient: Decodable { var drop: RawDrop?; init(from d: Decoder) { drop = try? RawDrop(from: d) } }
+
+  init(from decoder: Decoder) throws {
+    droppings = try decoder.container(keyedBy: CodingKeys.self).decode([Lenient].self, forKey: .droppings).compactMap(\.drop)
+  }
 }
 
 struct LikeCount: Decodable, Sendable {
@@ -103,11 +111,11 @@ struct LikeCount: Decodable, Sendable {
 struct RawDrop: Decodable, Sendable {
   var type: String
   var droppingId: String
-  var userId: String
-  var content: String
+  var userId: String?
+  var content: String?
   var latitude: Double
   var longitude: Double
-  var address: String
+  var address: String?
   var isMyDropping: Bool?
   var songId: String?
   var title: String?
@@ -136,9 +144,9 @@ struct RawDrop: Decodable, Sendable {
       return nil
     }
     return DropSummary(
-      id: droppingId, userId: userId, kind: kind, content: content,
-      coordinate: Coordinate(latitude: latitude, longitude: longitude), address: address,
-      imageURL: (albumImageUrl ?? firstAlbumImageUrl).flatMap(URL.init(string:)), isMine: isMyDropping ?? false
+      id: droppingId, userId: userId ?? "", kind: kind, content: content ?? "",
+      coordinate: Coordinate(latitude: latitude, longitude: longitude), address: address ?? "",
+      imageURL: [albumImageUrl, firstAlbumImageUrl].compactMap { $0 }.first { !$0.isEmpty }.flatMap(URL.init(string:)), isMine: isMyDropping ?? false
     )
   }
 }

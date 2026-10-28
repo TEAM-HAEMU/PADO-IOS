@@ -121,6 +121,12 @@ public struct PlayerFeature {
         state.duration = duration
         return .none
 
+      case let .playerEvent(.playingChanged(isPlaying)):
+        // 끼어들기로 멈췄거나 이어폰·제어 센터로 다시 튼 경우만 반영 (로딩·끝난 상태는 그대로)
+        guard state.status == .playing || state.status == .paused else { return .none }
+        state.status = isPlaying ? .playing : .paused
+        return .none
+
       case .playerEvent(.finished):
         state.status = .idle
         state.elapsed = 0

@@ -7,6 +7,8 @@ public struct AudioPlayerClient: Sendable {
   public enum Event: Equatable, Sendable {
     /// 재생 위치(초)와 전체 길이(초)
     case progress(elapsed: Double, duration: Double)
+    /// 앱 밖에서 멈추거나 다시 튼 경우 (전화·Siri·이어폰 빠짐·제어 센터)
+    case playingChanged(Bool)
     case finished
     case failed
   }
@@ -63,6 +65,8 @@ final class LivePlayer {
   private let player = AVPlayer()
   private var timeObserver: Any?
   private var endObserver: NSObjectProtocol?
+  private var failObserver: NSObjectProtocol?
+  private var kvo: [NSKeyValueObservation] = []
   private var continuation: AsyncStream<AudioPlayerClient.Event>.Continuation?
   /// 몇 번째 재생인지 — 앞 곡 스트림의 늦은 정리가 새 곡의 관찰자를 지우지 않게 한다
   private var generation = 0
@@ -87,10 +91,33 @@ final class LivePlayer {
       continuation.yield(.finished)
       continuation.finish()
     }
+    // 주소가 만료됐거나(403) 네트워크가 끊긴 경우 — 알리지 않으면 화면이 '재생 중'에 멈춘다
+    failObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemFailedToPlayToEndTime, object: item, queue: .main) { _ in
+      continuation.yield(.failed)
+      continuation.finish()
+    }
+    kvo = [
+      item.observe(\.status, options: [.new]) { item, _ in
+        guard item.status == .failed else { return }
+        continuation.yield(.failed)
+        continuation.finish()
+      },
+      player.observe(\.timeControlStatus, options: [.new]) { player, _ in
+        switch player.timeControlStatus {
+        case .playing: continuation.yield(.playingChanged(true))
+        case .paused: continuation.yield(.playingChanged(false))
+        case .waitingToPlayAtSpecifiedRate: break
+        @unknown default: break
+        }
+      },
+    ]
     continuation.onTermination = { [weak self] _ in
       Task { @MainActor in
+        // 새 곡이 이미 시작됐으면 손대지 않는다. 아니면(취소·끝남·실패) 소리도 멈춘다
         guard let self, self.generation == current else { return }
+        self.player.pause()
         self.removeObservers()
+        self.deactivateSession()
       }
     }
     player.play()
@@ -104,6 +131,14 @@ final class LivePlayer {
     player.pause()
     player.replaceCurrentItem(with: nil)
     finishCurrent()
+    deactivateSession()
+  }
+
+  /// 세션을 내려놓아 사용자가 듣던 다른 앱 음악이 다시 나오게 한다
+  private func deactivateSession() {
+    #if os(iOS)
+    try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+    #endif
   }
 
   private func finishCurrent() {
@@ -115,7 +150,11 @@ final class LivePlayer {
   private func removeObservers() {
     if let timeObserver { player.removeTimeObserver(timeObserver) }
     if let endObserver { NotificationCenter.default.removeObserver(endObserver) }
+    if let failObserver { NotificationCenter.default.removeObserver(failObserver) }
+    kvo.forEach { $0.invalidate() }
+    kvo = []
     timeObserver = nil
     endObserver = nil
+    failObserver = nil
   }
 }

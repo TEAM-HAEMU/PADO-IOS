@@ -87,6 +87,19 @@ public struct MusicDropDetail: Equatable, Sendable, Decodable {
     self.createdAt = createdAt
     self.albumImageUrl = albumImageUrl
   }
+
+  private enum CodingKeys: String, CodingKey { case droppingId, songId, userId, username, content, createdAt, albumImageUrl }
+
+  public init(from decoder: Decoder) throws {
+    let c = try decoder.container(keyedBy: CodingKeys.self)
+    droppingId = try c.decode(String.self, forKey: .droppingId)
+    songId = try c.decode(String.self, forKey: .songId)
+    userId = try c.decodeIfPresent(String.self, forKey: .userId) ?? ""
+    username = try c.decodeIfPresent(String.self, forKey: .username) ?? ""
+    content = try c.decodeIfPresent(String.self, forKey: .content) ?? ""
+    createdAt = try c.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
+    albumImageUrl = try c.decodeURLIfPresent(forKey: .albumImageUrl)
+  }
 }
 
 /// 곡 — 서버 `GET /songs/{id}`
@@ -98,6 +111,14 @@ public struct Song: Equatable, Identifiable, Sendable, Decodable {
     public init(spotify: URL? = nil, youtubeMusic: URL? = nil) {
       self.spotify = spotify
       self.youtubeMusic = youtubeMusic
+    }
+
+    private enum CodingKeys: String, CodingKey { case spotify, youtubeMusic }
+
+    public init(from decoder: Decoder) throws {
+      let c = try decoder.container(keyedBy: CodingKeys.self)
+      spotify = try c.decodeURLIfPresent(forKey: .spotify)
+      youtubeMusic = try c.decodeURLIfPresent(forKey: .youtubeMusic)
     }
   }
 
@@ -117,6 +138,18 @@ public struct Song: Equatable, Identifiable, Sendable, Decodable {
     self.albumImagePath = albumImagePath
     self.links = links
   }
+
+  private enum CodingKeys: String, CodingKey { case id, title, artist, duration, albumImagePath, links }
+
+  public init(from decoder: Decoder) throws {
+    let c = try decoder.container(keyedBy: CodingKeys.self)
+    id = try c.decode(String.self, forKey: .id)
+    title = try c.decode(String.self, forKey: .title)
+    artist = try c.decode(String.self, forKey: .artist)
+    duration = try c.decodeIfPresent(Int.self, forKey: .duration) ?? 30
+    albumImagePath = try c.decodeURLIfPresent(forKey: .albumImagePath)
+    links = try c.decodeIfPresent(Links.self, forKey: .links) ?? .init()
+  }
 }
 
 /// 드랍 반응 수 (좋아요·댓글) — 1단계는 상세 화면 표시용
@@ -127,5 +160,13 @@ public struct DropStats: Equatable, Sendable {
   public init(likes: Int, comments: Int) {
     self.likes = likes
     self.comments = comments
+  }
+}
+
+extension KeyedDecodingContainer {
+  /// URL은 문자열로 받아 바꾼다 — 서버가 `""`나 깨진 주소를 보내도 응답 전체가 실패하지 않게 (JSONDecoder의 URL 디코딩은 그때 throw)
+  func decodeURLIfPresent(forKey key: Key) throws -> URL? {
+    guard let raw = try decodeIfPresent(String.self, forKey: key), !raw.isEmpty else { return nil }
+    return URL(string: raw)
   }
 }

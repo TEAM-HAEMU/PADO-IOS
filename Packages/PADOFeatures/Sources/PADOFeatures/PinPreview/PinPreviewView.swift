@@ -54,10 +54,14 @@ struct PinPreviewView: View {
     }
   }
 
-  /// "2026-10-26T09:40:00Z" → "10월 26일 18:40" (기기 시간대)
+  /// "2026-10-26T09:40:00Z" → "10월 26일 18:40" (기기 시간대).
+  /// 서버(Spring LocalDateTime)는 시간대 없이 소수 초까지 보내기도 한다 — "2026-10-26T09:40:00.123456"
   static func timeLabel(_ iso: String) -> String {
-    let parser = ISO8601DateFormatter()
-    guard let date = parser.date(from: iso) ?? parser.date(from: iso + "Z") else { return "" }
+    let plain = ISO8601DateFormatter()
+    let fractional = ISO8601DateFormatter()
+    fractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    let candidates = [iso, iso + "Z"]
+    guard let date = candidates.lazy.compactMap({ plain.date(from: $0) ?? fractional.date(from: $0) }).first else { return "" }
     let f = DateFormatter()
     f.locale = Locale(identifier: "ko_KR")
     f.dateFormat = "M월 d일 HH:mm"

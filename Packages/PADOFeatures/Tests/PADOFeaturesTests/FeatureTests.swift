@@ -68,6 +68,24 @@ struct PlayerFeatureTests {
     await store.receive(\.previewResolved) { $0.status = .unavailable } // 미리듣기 없는 곡
     #expect(stopped.value == 1)
   }
+
+  @Test("전화·이어폰 빠짐으로 멈추면 일시정지로, 밖에서 다시 틀면 재생으로 (끝난 곡은 그대로)")
+  func externalPause() async {
+    let store = TestStore(initialState: PlayerFeature.State(track: nanchun, status: .playing, elapsed: 10)) { PlayerFeature() }
+    await store.send(.playerEvent(.playingChanged(false))) { $0.status = .paused }
+    await store.send(.playerEvent(.playingChanged(true))) { $0.status = .playing }
+    await store.send(.playerEvent(.failed)) { $0.status = .unavailable }
+    await store.send(.playerEvent(.playingChanged(true))) // 실패한 곡은 다시 누를 때까지 그대로
+  }
+
+  @Test("서버 시간 형식: 소수 초·시간대 없는 값도 읽는다")
+  func timeLabel() {
+    let a = PinPreviewView.timeLabel("2026-10-26T09:40:00Z")
+    #expect(!a.isEmpty)
+    #expect(PinPreviewView.timeLabel("2026-10-26T09:40:00.123456") == a)
+    #expect(PinPreviewView.timeLabel("2026-10-26T09:40:00") == a)
+    #expect(PinPreviewView.timeLabel("어제") == "")
+  }
 }
 
 @MainActor
@@ -105,7 +123,10 @@ struct MapFeatureTests {
       $0.location.currentLocation = { throw LocationClient.Failure.denied }
     }
     await store.send(.task) { $0.loading = .loading }
-    await store.receive(\.located.failure) { $0.loading = .failed("위치 권한이 꺼져 있어요. 설정에서 켜면 주변 드랍이 보여요.") }
+    await store.receive(\.located.failure) {
+      $0.locationDenied = true
+      $0.loading = .failed("위치 권한이 꺼져 있어요. 설정에서 켜면 주변 드랍이 보여요.")
+    }
   }
 
   @Test("시트의 재생 버튼은 지도의 재생기로 위임된다 (시트를 닫아도 계속 재생)")

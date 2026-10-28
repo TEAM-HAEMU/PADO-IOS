@@ -9,6 +9,8 @@ public struct MapView: View {
   @Bindable var store: StoreOf<MapFeature>
   @State private var camera: MapCameraPosition = .automatic
   @State private var tab: PADODock.Tab = .map
+  @Environment(\.openURL) private var openURL
+  @Environment(\.scenePhase) private var scenePhase
 
   public init(store: StoreOf<MapFeature>) {
     self.store = store
@@ -39,6 +41,10 @@ public struct MapView: View {
     }
     .background(PADOTokens.Color.page)
     .task { await store.send(.task).finish() }
+    // 설정 앱에서 권한을 켜고 돌아오면 다시 찾는다
+    .onChange(of: scenePhase) { _, phase in
+      if phase == .active, store.locationDenied { store.send(.retryTapped) }
+    }
     .onChange(of: store.center) { _, center in
       guard let center else { return }
       camera = .region(MKCoordinateRegion(center: center.clLocation, latitudinalMeters: 1400, longitudinalMeters: 1400))
@@ -116,7 +122,9 @@ public struct MapView: View {
   @ViewBuilder private var statusBanner: some View {
     switch store.loading {
     case let .failed(message):
-      Button { store.send(.retryTapped) } label: {
+      Button {
+        if store.locationDenied, let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) } else { store.send(.retryTapped) }
+      } label: {
         Text(message).padoText(PADOTokens.Typography.caption).foregroundStyle(PADOTokens.Color.ink)
           .padding(.horizontal, 14).padding(.vertical, 8)
           .background(PADOTokens.Color.card, in: Capsule())

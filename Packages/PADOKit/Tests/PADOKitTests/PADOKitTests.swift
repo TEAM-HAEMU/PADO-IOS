@@ -60,4 +60,24 @@ struct PADOKitTests {
     let b = MockData.at(north: 150, east: 0)
     #expect(abs(a.distance(to: b) - 150) < 1)
   }
+
+  @Test("깨진 항목·빈 URL이 있어도 나머지 드랍과 곡은 보인다")
+  func decodeLenient() throws {
+    let json = """
+    {"droppings":[
+      {"type":"MUSIC","droppingId":"d1","userId":null,"content":null,"latitude":35.19,"longitude":128.90,"address":null,"songId":"s1","title":"난춘","artist":"새소년","albumImageUrl":""},
+      {"type":"MUSIC","droppingId":"d2","latitude":"깨짐","longitude":128.90},
+      {"type":"MUSIC","droppingId":"d3","userId":"u3","content":"","latitude":35.18,"longitude":128.91,"address":"부산","songId":"s2","title":"파도","artist":"새소년"}
+    ]}
+    """.data(using: .utf8)!
+    let drops = try JSONDecoder().decode(NearbyResponse.self, from: json).droppings.compactMap(\.summary)
+    #expect(drops.map(\.id) == ["d1", "d3"])
+    #expect(drops[0].imageURL == nil && drops[0].content == "")
+
+    let song = try JSONDecoder().decode(Song.self, from: """
+    {"id":"s1","title":"난춘","artist":"새소년","duration":250,"albumImagePath":"","links":{"spotify":"https://open.spotify.com/track/x","youtubeMusic":null}}
+    """.data(using: .utf8)!)
+    #expect(song.albumImagePath == nil)
+    #expect(song.links.spotify == URL(string: "https://open.spotify.com/track/x"))
+  }
 }

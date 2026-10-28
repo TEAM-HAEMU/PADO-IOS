@@ -103,6 +103,7 @@ final class LiveLocationProvider: NSObject, CLLocationManagerDelegate {
   }
 
   nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-    Task { @MainActor in self.resolve(.failure(LocationClient.Failure.unavailable)) }
+    let denied = (error as? CLError)?.code == .denied
+    Task { @MainActor in self.resolve(.failure(denied ? LocationClient.Failure.denied : LocationClient.Failure.unavailable)) }
   }
 }

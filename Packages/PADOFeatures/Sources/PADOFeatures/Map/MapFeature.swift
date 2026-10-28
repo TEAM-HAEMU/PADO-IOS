@@ -16,6 +16,8 @@ public struct MapFeature {
     }
 
     public var center: Coordinate?
+    /// 위치 권한이 꺼져 있음 — 안내 배너를 누르면 다시 묻지 않고 설정 앱을 연다
+    public var locationDenied = false
     /// 지도 위쪽 제목 (동 이름)
     public var placeName: String?
     public var drops: [DropSummary] = []
@@ -58,6 +60,7 @@ public struct MapFeature {
       case .task, .retryTapped:
         guard state.loading != .loading else { return .none }
         state.loading = .loading
+        state.locationDenied = false
         return .run { [location] send in
           await send(.located(await Result { try await location.currentLocation() }))
         }
@@ -76,7 +79,8 @@ public struct MapFeature {
         return .none
 
       case let .located(.failure(error)):
-        state.loading = .failed(error as? LocationClient.Failure == .denied
+        state.locationDenied = error as? LocationClient.Failure == .denied
+        state.loading = .failed(state.locationDenied
           ? "위치 권한이 꺼져 있어요. 설정에서 켜면 주변 드랍이 보여요."
           : "위치를 찾지 못했어요. 잠시 뒤 다시 시도해 주세요.")
         return .none
