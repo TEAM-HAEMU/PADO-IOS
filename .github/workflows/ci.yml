@@ -1,0 +1,84 @@
+# PR·main 푸시마다: 토큰(생성물이 원본과 맞는지 + 생성기 테스트) → SPM 패키지 테스트(iOS 시뮬레이터) → 앱 타깃 빌드
+# 서명·업로드는 하지 않는다 (TestFlight 업로드는 로컬에서 사람이 확인하고 올림)
+name: iOS CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tokens:
+    name: 토큰 검사
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - run: npm run test:tokens
+      - name: 생성물이 tokens/ 원본과 같은지
+        run: |
+          npm run tokens
+          git diff --exit-code -- tokens/pado.tokens.json generated Packages/PADODesignSystem/Sources/PADODesignSystem/Tokens \
+            || { echo "::error::토큰 생성물이 원본과 다릅니다. 로컬에서 npm run tokens 후 커밋하세요."; exit 1; }
+
+  packages:
+    name: 패키지 테스트 (${{ matrix.package }})
+    runs-on: macos-26
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [PADOKit, PADODesignSystem, PADOFeatures]
+    steps:
+      - uses: actions/checkout@v7
+      - name: 시뮬레이터 고르기
+        id: sim
+        run: |
+          xcodebuild -version
+          # 스냅샷 기준과 같은 iOS 26.5 · iPhone 17 (없으면 가장 최신 iOS의 iPhone 17)
+          id=$(xcrun simctl list devices available -j | python3 -c '
+          import json,sys
+          rt=sorted(((r,l) for r,l in json.load(sys.stdin)["devices"].items() if ".iOS-" in r), key=lambda x: [int(n) for n in x[0].split("iOS-")[1].split("-")], reverse=True)
+          pref=[x for x in rt if x[0].endswith("iOS-26-5")] + rt
+          print(next(d["udid"] for r,l in pref for d in l if d["name"]=="iPhone 17"))')
+          echo "udid=$id" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v6
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+          key: spm-${{ matrix.package }}-${{ hashFiles(format('Packages/{0}/Package.resolved', matrix.package)) }}
+      - name: 테스트
+        working-directory: Packages/${{ matrix.package }}
+        run: |
+          set -o pipefail
+          xcodebuild test -scheme ${{ matrix.package }} -destination "id=${{ steps.sim.outputs.udid }}" \
+            -skipMacroValidation -skipPackagePluginValidation -resultBundlePath "$RUNNER_TEMP/${{ matrix.package }}.xcresult" | xcbeautify || exit 1
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: ${{ matrix.package }}-xcresult
+          path: ${{ runner.temp }}/${{ matrix.package }}.xcresult
+
+  app:
+    name: 앱 빌드 (Release, 서명 없음)
+    needs: tokens
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+      - run: brew install xcodegen
+      - run: xcodegen
+      - name: 빌드
+        run: |
+          set -o pipefail
+          xcodebuild build -project PADO.xcodeproj -scheme PADO -configuration Release -destination 'generic/platform=iOS Simulator' \
+            -skipMacroValidation -skipPackagePluginValidation CODE_SIGNING_ALLOWED=NO | xcbeautify
