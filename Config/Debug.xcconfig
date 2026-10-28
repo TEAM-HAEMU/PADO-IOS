@@ -1,0 +1,3 @@
+#include "Base.xcconfig"
+// 개발 빌드는 목 데이터 (RN 목 서버와 같은 봉림동 시드) — 서버·로그인 없이 화면 확인
+PADO_USE_MOCK = YES

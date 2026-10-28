@@ -1,0 +1,6 @@
+// 공통 빌드 설정 — 비밀값은 Secrets.xcconfig(로컬 전용, .gitignore)에
+PRODUCT_BUNDLE_IDENTIFIER = com.paado.com
+MARKETING_VERSION = 1.1.0
+CURRENT_PROJECT_VERSION = 1
+PADO_API_BASE_URL = https:/$()/api.paado.app/api/v1
+#include? "Secrets.xcconfig"

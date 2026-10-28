@@ -1,0 +1,62 @@
+name: PADO
+options:
+  bundleIdPrefix: com.paado
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+configs:
+  Debug: debug
+  Release: release
+configFiles:
+  Debug: Config/Debug.xcconfig
+  Release: Config/Release.xcconfig
+packages:
+  PADOFeatures:
+    path: Packages/PADOFeatures
+  PADODesignSystem:
+    path: Packages/PADODesignSystem
+  PADOKit:
+    path: Packages/PADOKit
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    TARGETED_DEVICE_FAMILY: "1"
+    DEVELOPMENT_TEAM: 67VUA6VSJ5
+    CODE_SIGN_STYLE: Automatic
+targets:
+  PADO:
+    type: application
+    platform: iOS
+    sources:
+      - App/Sources
+      - App/Resources
+    dependencies:
+      - package: PADOFeatures
+      - package: PADODesignSystem
+      - package: PADOKit
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: 파도
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen:
+          UIColorName: ""
+        UIUserInterfaceStyle: Light
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        ITSAppUsesNonExemptEncryption: false
+        NSLocationWhenInUseUsageDescription: 주변 1km 안의 드랍을 보여주고, 지금 서 있는 곳에 곡을 남기기 위해 위치를 사용해요.
+        PADOAPIBaseURL: $(PADO_API_BASE_URL)
+        PADOUseMock: $(PADO_USE_MOCK)
+        UIBackgroundModes: [audio]
+schemes:
+  PADO:
+    build:
+      targets:
+        PADO: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    archive:
+      config: Release
